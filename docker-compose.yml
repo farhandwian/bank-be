@@ -2,6 +2,24 @@ version: '3.8'
 
 services:
 
+
+  bank-backend-app:
+    image: haris2/bank-be:bank-backend-latest
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    depends_on:
+      - bank-kafka
+      - bank-db
+
+  bank-worker-app:
+    image: haris2/bank-be:bank-worker-latest
+    restart: on-failure
+    depends_on:
+      - bank-kafka
+      - bank-db
+
+
   bank-db:
     image: postgres:16.4-alpine3.20
     restart: always
@@ -17,7 +35,7 @@ services:
   bank-zk:
     image: confluentinc/cp-zookeeper:7.5.1
     hostname: bank-zk
-    restart: always
+    restart: on-failure
     container_name: bank-zk
     platform: linux/amd64
     ports:
@@ -40,6 +58,7 @@ services:
   bank-kafka:
     image: confluentinc/cp-kafka:7.5.1
     hostname: bank-kafka
+    restart: on-failure
     container_name: bank-kafka
     depends_on:
       - bank-zk

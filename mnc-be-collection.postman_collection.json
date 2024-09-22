@@ -1,0 +1,263 @@
+{
+	"info": {
+		"_postman_id": "048cc10d-b31d-449c-893c-c39e66f64888",
+		"name": "mnc-be-collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19967545"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"Guntur\",\n    \"last_name\": \"Putra\",\n    \"phone_number\": \"+6288111125501\",\n    \"address\": \"Jl. Kebon Sirih No. 1\",\n    \"pin\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone_number\" : \"+628811155501\",\n    \"pin\" : \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\" : \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZV9udW1iZXIiOiIrNjI4ODExMjU1NTAxIiwiaXNzIjoiU1lOLUJBQ0tFTkQiLCJzdWIiOiIrNjI4ODExMjU1NTAxIiwiZXhwIjoxNzI3NjEyODYyLCJuYmYiOjE3MjcwMDgwNjIsImlhdCI6MTcyNzAwODA2MiwianRpIjoiZjdkYTI0NzUtMTU5Ny00ZGI1LTk1NWQtYWY5ZTk1MDg4MWEyIn0.8SANTFwZA0LYSN9T41Y0oBgrfjLgwTzqG93_TqCG77w\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/refresh",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZV9udW1iZXIiOiIrNjI4ODExMTU1NTAxIiwiaXNzIjoiU1lOLUJBQ0tFTkQiLCJzdWIiOiIrNjI4ODExMTU1NTAxIiwiZXhwIjoxNzI3MDExNDEzLCJuYmYiOjE3MjcwMTExMTMsImlhdCI6MTcyNzAxMTExMywianRpIjoiNWE5MzgwYWMtMjNhZC00Y2ExLWI2MWQtODI0NWNkMzQ4MDhjIn0.zRSiWKG2nzLp0fG2m4CPQGAXi9fxyHA9YP2igFgast0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"Guntur\",\n    \"last_name\": \"Haris\",\n    \"address\": \"Jl. Kebon Sirih No. 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/update",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "bank",
+			"item": [
+				{
+					"name": "topup",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZV9udW1iZXIiOiIrNjI4ODExMTU1NTAxIiwiaXNzIjoiU1lOLUJBQ0tFTkQiLCJzdWIiOiIrNjI4ODExMTU1NTAxIiwiZXhwIjoxNzI3MDI2NTc1LCJuYmYiOjE3MjcwMjYyNzUsImlhdCI6MTcyNzAyNjI3NSwianRpIjoiYmEyODhjMjMtMzM1NC00Nzg3LTgwZGItNWU4NzFlNzJiZmUxIn0.09iTtXrZzOivva3wc7pYIkwS7cx8N9eGcAWSTJyp-6E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\" : 22000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/topup",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"topup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transfer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZV9udW1iZXIiOiIrNjI4ODExMTU1NTAxIiwiaXNzIjoiU1lOLUJBQ0tFTkQiLCJzdWIiOiIrNjI4ODExMTU1NTAxIiwiZXhwIjoxNzI3MDI5NDQ2LCJuYmYiOjE3MjcwMjkxNDYsImlhdCI6MTcyNzAyOTE0NiwianRpIjoiMmUxZDk1NDctMWM5YS00ZWZjLWFhMGYtZGJhNjgyNjI4YmRlIn0.4jckuJkjaHlVM0xY8Ms6Xnl5xXsZ7hRJ1uh6S2383tg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"target_user\": \"019219a4-faa4-7d37-9fdb-9ee85e726be9\",\n\"amount\": 1000,\n\"remarks\": \"Hadiah Ultah\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/transfer",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZV9udW1iZXIiOiIrNjI4ODExMTU1NTAxIiwiaXNzIjoiU1lOLUJBQ0tFTkQiLCJzdWIiOiIrNjI4ODExMTU1NTAxIiwiZXhwIjoxNzI3MDE4NTc2LCJuYmYiOjE3MjcwMTgyNzYsImlhdCI6MTcyNzAxODI3NiwianRpIjoiMmZmMmQ4MTAtZjhmMy00ZjkxLWIyN2UtZjU4YTIwNjIzNjFiIn0.KXliDGhwEBUJ4RWUIWBpA8eBigmZdA-uY_G9hx6LlUU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\" : 22000,\n    \"remarks\" : \"buat hadiah\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/payment",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
