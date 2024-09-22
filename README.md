@@ -117,7 +117,7 @@ cd migration
 The backend component provides the API endpoints for Bank Management System. To interact with the backend, you
 can use an API testing tool such as Postman.
 
-Import postman collection [file]() to your Postman. 
+Import postman collection [file](https://github.com/Harisatul/bank-be/blob/main/mnc-be-collection.postman_collection.json) to your Postman. 
 
 ## ERD
 
