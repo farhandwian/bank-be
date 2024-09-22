@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bank-backend/feature/bank"
 	"bank-backend/feature/shared"
 	"bank-backend/feature/user"
 	"context"
@@ -27,9 +28,12 @@ func runHTTPServer(ctx context.Context) {
 	}
 	defer pool.Close()
 	user.SetDBPool(pool)
+	bank.SetDBPool(pool)
+
 	validate := validator.New()
 	validate.RegisterValidation("indonesianphone", shared.ValidateIndonesianPhoneNumber)
 	user.SetValidator(validate)
+	bank.SetValidator(validate)
 	// Initialize Fiber app
 	app := fiber.New(fiber.Config{
 		ReadTimeout:  time.Duration(cfg.Server.ReadTimeout) * time.Second,
@@ -44,7 +48,7 @@ func runHTTPServer(ctx context.Context) {
 	})
 
 	user.FiberRoute(app)
-
+	bank.FiberRoute(app)
 	go func() {
 
 		if err := app.Listen(cfg.Server.Addr()); err != nil {
