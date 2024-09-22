@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"book-service/feature/books"
-	"book-service/feature/shared"
-	"book-service/pkg"
+	"bank-worker/feature/bank"
+	"bank-worker/feature/shared"
+	"bank-worker/pkg"
 	"context"
 	"github.com/IBM/sarama"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -14,10 +14,10 @@ import (
 )
 
 func runTransferConsumer(ctx context.Context) {
-	cfg := shared.LoadConfig("config/created_user_consumer.yaml")
+	cfg := shared.LoadConfig("config/app.yml")
 	kafkaCfg := pkg.NewKafkaConsumerConfig()
 
-	consumer, err := sarama.NewConsumerGroup([]string{"172.17.0.1:9092"}, books.CreateNewUserTopicGroupConsumer, kafkaCfg)
+	consumer, err := sarama.NewConsumerGroup([]string{"172.17.0.1:9092"}, bank.CreateNewTransferTopic, kafkaCfg)
 	if err != nil {
 		log.Fatalln("unable to create consumer group", err)
 	}
@@ -38,11 +38,11 @@ func runTransferConsumer(ctx context.Context) {
 	}
 	defer pool.Close()
 
-	books.SetDBPool(pool)
+	bank.SetDBPool(pool)
 
 	go func() {
 		for err = range consumer.Errors() {
-			log.Printf("consumer error, topic %s, error %s", books.CreateNewUserTopic, err.Error())
+			log.Printf("consumer error, topic %s, error %s", bank.CreateNewTransferTopic, err.Error())
 		}
 	}()
 
@@ -53,18 +53,18 @@ func runTransferConsumer(ctx context.Context) {
 				log.Println("consumer stopped")
 				return
 			default:
-				err = consumer.Consume(newCtx, []string{books.CreateNewUserTopic},
-					pkg.NewKafkaConsumer(&books.NewUserEventHandler{}, 1000),
+				err = consumer.Consume(newCtx, []string{bank.CreateNewTransferTopic},
+					pkg.NewKafkaConsumer(&bank.NewTransferEventHandler{}, 1000),
 				)
 				if err != nil {
-					log.Printf("consume message error, topic %s, error %s", books.CreateNewUserTopic, err.Error())
+					log.Printf("consume message error, topic %s, error %s", bank.CreateNewTransferTopic, err.Error())
 					return
 				}
 			}
 		}
 	}()
 
-	log.Printf("consumer up and running, topic %s, group: %s", books.CreateNewUserTopic, books.CreateNewUserTopicGroupConsumer)
+	log.Printf("consumer up and running, topic %s, group: %s", bank.CreateNewTransferTopic, bank.CreateNewTransferTopicGroupConsumer)
 
 	sigterm := make(chan os.Signal, 1)
 	signal.Notify(sigterm, syscall.SIGINT, syscall.SIGTERM)

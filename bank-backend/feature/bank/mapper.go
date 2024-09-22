@@ -28,15 +28,15 @@ func paymentDTO(user User, prev int, tid uuid.UUID, topup int, time time.Time, r
 	return response
 }
 
-func transferDTO(user User, prev int, tid uuid.UUID, topup int, time time.Time, remarks string, targetTransfer string) TransferResponse {
+func transferDTO(balanceAfter int, prev int, tid uuid.UUID, topup int, time string, remarks string, targetTransfer string) TransferResponse {
 	response := TransferResponse{
-		PaymentID:      tid.String(),
+		TransferID:     tid.String(),
 		BalanceBefore:  prev,
-		BalanceAfter:   user.Balance,
+		BalanceAfter:   balanceAfter,
 		Remarks:        remarks,
 		TargetTransfer: targetTransfer,
 		Amount:         topup,
-		CreatedAt:      time.String(),
+		CreatedAt:      time,
 	}
 	return response
 }

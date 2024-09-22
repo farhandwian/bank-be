@@ -4,7 +4,9 @@ import (
 	"bank-backend/feature/bank"
 	"bank-backend/feature/shared"
 	"bank-backend/feature/user"
+	"bank-backend/pkg"
 	"context"
+	"github.com/IBM/sarama"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -34,6 +36,15 @@ func runHTTPServer(ctx context.Context) {
 	validate.RegisterValidation("indonesianphone", shared.ValidateIndonesianPhoneNumber)
 	user.SetValidator(validate)
 	bank.SetValidator(validate)
+
+	producer, err := sarama.NewSyncProducer([]string{"172.17.0.1:9092"}, pkg.NewKafkaProducerConfig())
+	if err != nil {
+		log.Fatalln("unable to create kafka producer", err)
+	}
+
+	defer producer.Close()
+	bank.SetKafkaProducer(producer)
+
 	// Initialize Fiber app
 	app := fiber.New(fiber.Config{
 		ReadTimeout:  time.Duration(cfg.Server.ReadTimeout) * time.Second,

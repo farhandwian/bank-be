@@ -34,11 +34,20 @@ type TransferRequest struct {
 }
 
 type TransferResponse struct {
-	PaymentID      string `json:"payment_id"`
+	TransferID     string `json:"transfer_id"`
 	BalanceBefore  int    `json:"balance_before"`
 	BalanceAfter   int    `json:"balance_after"`
 	TargetTransfer string `json:"target_transfer"`
 	Amount         int    `json:"amount"`
 	Remarks        string `json:"remarks,omitempty"`
 	CreatedAt      string `json:"created_at"`
+}
+
+type TransferEvent struct {
+	Transfer              string `json:"transaction_id"`
+	Amount                int    `json:"amount"`
+	PhoneNumberOriginUser string `json:"phone_number_origin_user"`
+	TargetUser            string `json:"target_user"`
+	Remarks               string `json:"remarks"`
+	CreatedAt             string `json:"created_at"`
 }

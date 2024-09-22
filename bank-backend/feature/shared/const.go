@@ -10,4 +10,5 @@ var (
 	LogEventStateFetchCache    = "fetch_cache"
 	LogEventStateSetCache      = "set_cache"
 	LogEventStateMapper        = "mapper"
+	LogEventStateKafkaPublish  = "kafka_publish"
 )

@@ -8,6 +8,36 @@ import (
 	"time"
 )
 
+func checkIfUserExistByPhoneNumber(ctx context.Context, phoneNumber string) (User, error) {
+	user := User{}
+	query := `SELECT id, balance FROM "user" where phone_number = $1`
+
+	err := db.QueryRow(ctx, query, phoneNumber).Scan(&user.ID, &user.Balance)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			err = errUserNotFound
+			return user, err
+		}
+		return user, err
+	}
+	return user, nil
+}
+
+func checkIfUserExistByID(ctx context.Context, id uuid.UUID) (User, error) {
+	user := User{}
+	query := `SELECT id, balance FROM "user" where id = $1`
+
+	err := db.QueryRow(ctx, query, id).Scan(&user.ID, &user.Balance)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			err = errUserNotFound
+			return user, err
+		}
+		return user, err
+	}
+	return user, nil
+}
+
 func updateTopUpt(ctx context.Context, user User) (User, int, uuid.UUID, time.Time, error) {
 	returningUser := User{}
 	tx, err := db.Begin(ctx)

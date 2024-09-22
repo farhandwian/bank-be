@@ -4,6 +4,7 @@ import (
 	"bank-backend/feature/middleware"
 	"bank-backend/feature/shared"
 	"bank-backend/pkg"
+	"encoding/json"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 	"log/slog"
@@ -174,8 +175,11 @@ func Transfer(ctx fiber.Ctx) error {
 		lvState1       = shared.LogEventStateDecodeRequest
 		lfState1Status = "state_1_decode_request_status"
 
-		lvState2       = shared.LogEventStateUpdateDB
-		lfState2Status = "state_2_update_db_status"
+		lvState2       = shared.LogEventStateFetchDB
+		lfState2Status = "state_2_fetch_db_status"
+
+		lvState3       = shared.LogEventStateKafkaPublish
+		lfState3Status = "state_2_kafka_publish_status"
 
 		lf = []slog.Attr{
 			pkg.LogEventName("bank-service"),
@@ -186,6 +190,7 @@ func Transfer(ctx fiber.Ctx) error {
 	* ----------------------------------*/
 	// Retrieve the user phoneNumber from the context
 	userPhoneNumber := ctx.Locals("user-phone")
+	strPhoneNumber := userPhoneNumber.(string)
 
 	lf = append(lf, pkg.LogEventState(lvState1))
 	transfer := new(TransferRequest)
@@ -209,46 +214,108 @@ func Transfer(ctx fiber.Ctx) error {
 		pkg.LogEventPayload(transfer),
 	)
 	/*------------------------------------
-	| Step 2 : Update Balance
+	| Step 2 : Fetch User and Check Balance
 	* ----------------------------------*/
 	lf = append(lf, pkg.LogEventState(lvState2))
 
-	u := User{
-		UpdatedAt:   time.Now(),
-		Balance:     transfer.Amount,
-		PhoneNumber: userPhoneNumber.(string),
-	}
-
-	parse, err := uuid.Parse(transfer.TargetUser)
+	// check origin user
+	originUser, err := checkIfUserExistByPhoneNumber(ctx.Context(), strPhoneNumber)
 	if err != nil {
-		lf = append(lf, pkg.LogStatusFailed(lfState2Status))
-		pkg.LogWarnWithContext(ctx.Context(), err.Error(), err, lf)
-		return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
-			Message: "Internal Server Error",
-		})
-	}
-
-	user, prev, tid, createdAt, err := transferTX(ctx.Context(), u, parse, transfer.Remarks)
-	if err != nil {
-		if err == errBalanceNotEnough {
+		if err == errUserNotFound {
 			lf = append(lf, pkg.LogStatusFailed(lfState2Status))
 			pkg.LogWarnWithContext(ctx.Context(), err.Error(), err, lf)
-			return ctx.Status(http.StatusBadRequest).JSON(shared.StandardResponse{
-				Message: "Balance is not enough",
+			return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
+				Message: "user not found",
 			})
 		}
 		lf = append(lf, pkg.LogStatusFailed(lfState2Status))
 		pkg.LogWarnWithContext(ctx.Context(), err.Error(), err, lf)
 		return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
-			Message: "Internal Server Error",
+			Message: "internal server error",
 		})
 	}
+
+	if originUser.Balance < transfer.Amount {
+		lf = append(lf, pkg.LogStatusFailed(lfState2Status))
+		pkg.LogWarnWithContext(ctx.Context(), "balance is not enough", err, lf)
+		return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
+			Message: "user balance not enough",
+		})
+	}
+
+	//check destination user
+	parse, err := uuid.Parse(transfer.TargetUser)
+	if err != nil {
+		lf = append(lf, pkg.LogStatusFailed(lfState2Status))
+		pkg.LogWarnWithContext(ctx.Context(), err.Error(), err, lf)
+		return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
+			Message: "Internal server error",
+		})
+	}
+	_, err = checkIfUserExistByID(ctx.Context(), parse)
+	if err != nil {
+		if err == errUserNotFound {
+			lf = append(lf, pkg.LogStatusFailed(lfState2Status))
+			pkg.LogWarnWithContext(ctx.Context(), err.Error(), err, lf)
+			return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
+				Message: "target user not found",
+			})
+		}
+		lf = append(lf, pkg.LogStatusFailed(lfState2Status))
+		pkg.LogWarnWithContext(ctx.Context(), err.Error(), err, lf)
+		return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
+			Message: "internal server error",
+		})
+	}
+
 	lf = append(lf,
 		pkg.LogStatusSuccess(lfState2Status),
-		pkg.LogEventPayload(user),
+		pkg.LogEventPayload(originUser),
 	)
 
-	dto := transferDTO(user, prev, tid, transfer.Amount, createdAt, transfer.Remarks, transfer.TargetUser)
+	/*------------------------------------
+	| Step 3 : Publish TransferEvent
+	* ----------------------------------*/
+	lf = append(lf, pkg.LogEventState(lvState3))
+
+	id, err := pkg.GenerateId()
+	if err != nil {
+		lf = append(lf, pkg.LogStatusFailed(lfState3Status))
+		pkg.LogWarnWithContext(ctx.Context(), "generate uuid error", err, lf)
+		return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
+			Message: "internal server error",
+		})
+	}
+	now := time.Now()
+	// Format the time
+	formatted := now.Format("2006-01-02 15:04:05.000000")
+
+	event := TransferEvent{
+		Transfer:              id.String(),
+		Amount:                transfer.Amount,
+		PhoneNumberOriginUser: userPhoneNumber.(string),
+		TargetUser:            transfer.TargetUser,
+		Remarks:               transfer.Remarks,
+		CreatedAt:             formatted,
+	}
+	messageByte, err := json.Marshal(event)
+	if err != nil {
+		lf = append(lf, pkg.LogStatusFailed(lfState3Status))
+		pkg.LogWarnWithContext(ctx.Context(), "kafka publish error", err, lf)
+		return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
+			Message: "internal server error",
+		})
+	}
+	err = pkg.PublishMessage(kp, CreateNewTransferTopic, string(messageByte))
+	if err != nil {
+		lf = append(lf, pkg.LogStatusFailed(lfState3Status))
+		pkg.LogWarnWithContext(ctx.Context(), "kafka publish error", err, lf)
+		return ctx.Status(http.StatusInternalServerError).JSON(shared.StandardResponse{
+			Message: "internal server error",
+		})
+	}
+
+	dto := transferDTO(originUser.Balance-transfer.Amount, originUser.Balance, id, transfer.Amount, event.CreatedAt, transfer.Remarks, transfer.TargetUser)
 
 	return ctx.Status(http.StatusOK).JSON(shared.StandardResponse{
 		Status: "SUCCESS",

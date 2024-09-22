@@ -20,8 +20,8 @@ func Start() {
 	rootCmd := &cobra.Command{}
 	cmd := []*cobra.Command{
 		{
-			Use:   "serve-http",
-			Short: "Run HTTP server",
+			Use:   "serve",
+			Short: "Run Worker server",
 			Run: func(cmd *cobra.Command, _ []string) {
 				runTransferConsumer(ctx)
 			},
