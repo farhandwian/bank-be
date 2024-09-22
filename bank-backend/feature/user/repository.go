@@ -10,10 +10,10 @@ func insertUser(ctx context.Context, user User) (User, error) {
 	returningUser := User{}
 
 	query := `
-        INSERT INTO "user" (id, phone_number, pin, first_name, last_name, address, created_at, updated_at, version)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, first_name, last_name, phone_number, address,  created_at
+        INSERT INTO "user" (id, phone_number, pin, first_name, last_name, address, created_at, updated_at, version, balance)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, first_name, last_name, phone_number, address,  created_at
     `
-	err := db.QueryRow(ctx, query, user.ID, user.PhoneNumber, user.Pin, user.FirstName, user.LastName, user.Address, user.CreatedAt, user.UpdatedAt, user.Version).Scan(&returningUser.ID, &returningUser.FirstName, &returningUser.LastName, &returningUser.PhoneNumber, &returningUser.Address, &returningUser.CreatedAt)
+	err := db.QueryRow(ctx, query, user.ID, user.PhoneNumber, user.Pin, user.FirstName, user.LastName, user.Address, user.CreatedAt, user.UpdatedAt, user.Version, user.Balance).Scan(&returningUser.ID, &returningUser.FirstName, &returningUser.LastName, &returningUser.PhoneNumber, &returningUser.Address, &returningUser.CreatedAt)
 
 	if err != nil {
 		return returningUser, err

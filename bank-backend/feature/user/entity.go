@@ -13,6 +13,7 @@ type User struct {
 	LastName    string
 	Version     int
 	PhoneNumber string
+	Balance     int
 	Address     string
 	Pin         string
 }

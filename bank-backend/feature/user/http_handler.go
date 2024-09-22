@@ -120,6 +120,7 @@ func Register(ctx fiber.Ctx) error {
 		FirstName:   register.FirstName,
 		LastName:    register.LastName,
 		Address:     register.Address,
+		Balance:     0,
 		Pin:         string(password),
 	}
 
