@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  read_timeout: 1
+  write_timeout: 1
+
+db:
+  host: 172.17.0.1
+  port: 5432
+  user: postgres
+  password: haris123
+  db_name: bank_db
+  ssl_mode: disable
+  min_conn: 5
+  max_conn: 1000
+
+kafka:
+  broker: 172.17.0.1:9092
