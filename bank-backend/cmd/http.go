@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"bank-backend/feature/shared"
+	"bank-backend/feature/user"
 	"context"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
@@ -24,7 +26,10 @@ func runHTTPServer(ctx context.Context) {
 		log.Fatalln("unable to create database connection pool", err)
 	}
 	defer pool.Close()
-	//author.SetDBPool(pool)
+	user.SetDBPool(pool)
+	validate := validator.New()
+	validate.RegisterValidation("indonesianphone", shared.ValidateIndonesianPhoneNumber)
+	user.SetValidator(validate)
 	// Initialize Fiber app
 	app := fiber.New(fiber.Config{
 		ReadTimeout:  time.Duration(cfg.Server.ReadTimeout) * time.Second,
@@ -38,7 +43,7 @@ func runHTTPServer(ctx context.Context) {
 		return c.SendString("Hello, World 👋!")
 	})
 
-	//author.FiberRoute(app)
+	user.FiberRoute(app)
 
 	go func() {
 

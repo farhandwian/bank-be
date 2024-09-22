@@ -14,22 +14,20 @@ const (
 )
 
 type Claims struct {
-	Username string `json:"username"`
-	Role     string `json:"role"`
+	PhoneNumber string `json:"phone_number"`
 	jwt.RegisteredClaims
 }
 
-func GenerateAccessTokens(username string, role string) (string, error) {
+func GenerateAccessTokens(phone string) (string, error) {
 	// Generate Access Token
 	accessTokenClaims := Claims{
-		Username: username,
-		Role:     role,
+		PhoneNumber: phone,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(AccessTokenExpiration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			Issuer:    "SYN-BACKEND",
-			Subject:   username,
+			Subject:   phone,
 			ID:        uuid.New().String(),
 		},
 	}
@@ -43,16 +41,16 @@ func GenerateAccessTokens(username string, role string) (string, error) {
 	return accessTokenString, nil
 }
 
-func GenerateRefreshTokens(username string) (string, error) {
+func GenerateRefreshTokens(phone string) (string, error) {
 	// Generate Refresh Token
 	refreshTokenClaims := Claims{
-		Username: username,
+		PhoneNumber: phone,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(RefreshTokenExpiration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			Issuer:    "SYN-BACKEND",
-			Subject:   username,
+			Subject:   phone,
 			ID:        uuid.New().String(),
 		},
 	}
