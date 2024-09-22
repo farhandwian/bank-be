@@ -20,8 +20,8 @@ func transferTX(ctx context.Context, user User, targetUser uuid.UUID, remarks st
 	selectUserOrigin := `select phone_number, balance, version from "user" where phone_number = $1`
 
 	transactionQuery := `
-		INSERT INTO transaction (id, amount, balance_before, balance_after, transaction_type, user_id, created_at, version)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, created_at
+		INSERT INTO transaction (id, amount, balance_before, balance_after, transaction_type, user_id, created_at, version, remarks)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, created_at
 	`
 
 	var PhoneNumberOrigin string
@@ -110,6 +110,7 @@ func transferTX(ctx context.Context, user User, targetUser uuid.UUID, remarks st
 		transaction.UserID,
 		transaction.CreatedDate,
 		transaction.Version,
+		transaction.Remarks,
 	).Scan(&transactionId, &createdAt)
 
 	if err != nil {
@@ -125,6 +126,7 @@ func transferTX(ctx context.Context, user User, targetUser uuid.UUID, remarks st
 		transactionDestination.UserID,
 		transactionDestination.CreatedDate,
 		transactionDestination.Version,
+		transaction.Remarks,
 	).Scan(&transactionId, &createdAt)
 
 	if err != nil {
