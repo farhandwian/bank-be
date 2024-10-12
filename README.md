@@ -3,7 +3,6 @@
 This project is the backend component of bank management system, implemented using Docker, Go, Postgresql and kafka. It provides a reliable and efficient backend system for library management system, more manageable ones.
 High decopling also undirectly achived by utilizing asyncronous way.
 
-
 ## MVP Features
 
 - User Management
@@ -18,7 +17,7 @@ Make sure you have the following prerequisites installed:
 
 ## Configuration
 
-Modified Create ```app.yml``` file to in config  directory. ```app.yml``` supposed to be like this:
+Modified Create `app.yml` file to in config directory. `app.yml` supposed to be like this:
 
 ```
 server:
@@ -44,10 +43,7 @@ kafka:
 
 ## How To Run
 
-
-
 #### 1. Fun Way:
-
 
 Thanks to docker-compose.
 
@@ -63,7 +59,7 @@ git clone git@github.com:Harisatul/bank-be.git
 docker-compose up -d
 ```
 
-3. Execute sql migration file ```sql_dum.sql``` on migration folder:
+3. Execute sql migration file `sql_dum.sql` on migration folder:
 
 ```
 cd /migration
@@ -80,10 +76,11 @@ build binary
 ```
 git clone git@github.com:Harisatul/bank-be.git
 ```
+
 2. Go to service folder
 
 ```
-cd bank-backend
+cd belajar-untuk-kerja/aplikasi-bank/bank-be/bank-backend
 ```
 
 3. Build Binary
@@ -95,11 +92,12 @@ go build .
 4. Execute Binary
 
 ```
-./bank-backend serve-http
+./belajar-untuk-kerja/aplikasi-bank/bank-be/bank-backend serve-http
 ```
-note: bank-backend has argument ```serve-http``` and bank-worker has argument ```serve```
 
-5. Execute sql migration file ```sql_dump.sql``` on migration folder:
+note: belajar-untuk-kerja/aplikasi-bank/bank-be/bank-backend has argument `serve-http` and bank-worker has argument `serve`
+
+5. Execute sql migration file `sql_dump.sql` on migration folder:
 
 ```
 cd migration
@@ -109,15 +107,14 @@ cd migration
 
 ### Data Migration:
 
-```sql_dump.sql``` contain DDL sql to build db schema. since there are no pre-required data, you can try the system as soon as possible start with registering account.
-
+`sql_dump.sql` contain DDL sql to build db schema. since there are no pre-required data, you can try the system as soon as possible start with registering account.
 
 ## API USAGE
 
 The backend component provides the API endpoints for Bank Management System. To interact with the backend, you
 can use an API testing tool such as Postman.
 
-Import postman collection [file](https://github.com/Harisatul/bank-be/blob/main/mnc-be-collection.postman_collection.json) to your Postman. 
+Import postman collection [file](https://github.com/Harisatul/bank-be/blob/main/mnc-be-collection.postman_collection.json) to your Postman.
 
 ## ERD
 

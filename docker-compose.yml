@@ -1,10 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
-
-
-  bank-backend-app:
-    image: haris2/bank-be:bank-backend-latest
+  belajar-untuk-kerja/aplikasi-bank/bank-be/bank-backend-app:
+    image: haris2/bank-be:belajar-untuk-kerja/aplikasi-bank/bank-be/bank-backend-latest
     restart: on-failure
     ports:
       - "8080:8080"
@@ -18,7 +16,6 @@ services:
     depends_on:
       - bank-kafka
       - bank-db
-
 
   bank-db:
     image: postgres:16.4-alpine3.20
@@ -49,11 +46,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: '1G'
+          cpus: "0.25"
+          memory: "1G"
         reservations:
-          cpus: '0.15'
-          memory: '256M'
+          cpus: "0.15"
+          memory: "256M"
 
   bank-kafka:
     image: confluentinc/cp-kafka:7.5.1
@@ -67,14 +64,13 @@ services:
       - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: '172.17.0.1:2181'
+      KAFKA_ZOOKEEPER_CONNECT: "172.17.0.1:2181"
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://172.17.0.1:9092,PLAINTEXT_HOST://172.17.0.1:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       TZ: "Asia/Jakarta"
-
 
 volumes:
   bank_data:

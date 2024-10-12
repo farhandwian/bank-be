@@ -1,16 +1,17 @@
 package pkg
 
 import (
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"time"
 )
 
 // Define these in your configuration
 const (
-	AccessTokenExpiration  = 5 * time.Minute
+	AccessTokenExpiration  = 24 * time.Hour
 	RefreshTokenExpiration = 7 * 24 * time.Hour
-	JWTSecret              = "harisatul-aulia" // In production, use an environment variable
+	JWTSecret              = "farhan-dwian" // In production, use an environment variable
 )
 
 type Claims struct {

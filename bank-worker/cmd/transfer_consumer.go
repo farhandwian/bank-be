@@ -5,19 +5,20 @@ import (
 	"bank-worker/feature/shared"
 	"bank-worker/pkg"
 	"context"
-	"github.com/IBM/sarama"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/IBM/sarama"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func runTransferConsumer(ctx context.Context) {
 	cfg := shared.LoadConfig("config/app.yml")
 	kafkaCfg := pkg.NewKafkaConsumerConfig()
 
-	consumer, err := sarama.NewConsumerGroup([]string{"172.17.0.1:9092"}, bank.CreateNewTransferTopic, kafkaCfg)
+	consumer, err := sarama.NewConsumerGroup([]string{"localhost:9092"}, bank.CreateNewTransferTopic, kafkaCfg)
 	if err != nil {
 		log.Fatalln("unable to create consumer group", err)
 	}

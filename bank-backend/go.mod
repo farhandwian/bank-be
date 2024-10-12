@@ -1,6 +1,6 @@
 module bank-backend
 
-go 1.23.0
+go 1.22.2
 
 require (
 	github.com/IBM/sarama v1.43.3

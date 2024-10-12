@@ -5,10 +5,12 @@ import (
 	"bank-worker/pkg"
 	"context"
 	"encoding/json"
-	"github.com/IBM/sarama"
-	"github.com/google/uuid"
+	"fmt"
 	"log/slog"
 	"time"
+
+	"github.com/IBM/sarama"
+	"github.com/google/uuid"
 )
 
 type NewTransferEventHandler struct {
@@ -26,6 +28,8 @@ func (*NewTransferEventHandler) Handle(ctx context.Context, msg *sarama.Consumer
 			pkg.LogEventName("Transfer-Worker"),
 		}
 	)
+
+	fmt.Println("testes kafka")
 	/*------------------------------------
 	| Step 1 : Decode request
 	* ----------------------------------*/

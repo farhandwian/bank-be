@@ -4,14 +4,16 @@ server:
   write_timeout: 1
 
 db:
-  host: 172.17.0.1
-  port: 5432
+  host: localhost
+  port: 5433
   user: postgres
-  password: haris123
+  password: yoontae93
   db_name: bank_db
   ssl_mode: disable
   min_conn: 5
   max_conn: 1000
 
 kafka:
-  broker: 172.17.0.1:9092
+  broker: localhost:9092
+
+process_transfer_topic: bank.transfer_created
