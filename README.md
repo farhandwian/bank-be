@@ -8,6 +8,19 @@ High decopling also undirectly achived by utilizing asyncronous way.
 - User Management
 - Bank Management
 
+## Application Project Structure
+
+For bank-backend service i am using go monolith from [BUKA 2.0 reference](https://bukalapak.atlassian.net/wiki/spaces/CIS/pages/2216108710/RFC+Go+Monolith+Project+Structure) with some modifications.
+Description on each folder is like this:
+
+- cmd/: Stores all entry points to the services that are run within this project.
+- internal/
+  - config/: Initialises application and performs dependency injection into all modules.
+  - utils/: Example of some helpers that can be used across modules.
+- module/: Stores all the modules within this project. Each sub-directory in this folder should be self-contained. Module A should communicate with module B using B’s client package.
+  - bank/: Stores all needed files in the bank module. Each file can be named like `entity` which means contains entity of the module. `usecase` which means usecase layer. `repository` which means repository layer. etc
+- tools/: is tools that needed for building. Maybe some shell script, etc
+
 ## Prerequisites
 
 Make sure you have the following prerequisites installed:
@@ -21,36 +34,37 @@ Modified Create `app.yml` file to in config directory. `app.yml` supposed to be 
 
 ```
 server:
-  port: 8083
-  read_timeout: 3
-  write_timeout: 3
-
-# for worker, its okay to not have server config
+  port: 8080
+  read_timeout: 1
+  write_timeout: 1
 
 db:
-  host: 172.17.0.1
-  port: 5432
+  host: localhost
+  port: 5433
   user: postgres
-  password: haris123
+  password: yoontae93
   db_name: bank_db
   ssl_mode: disable
   min_conn: 5
-  max_conn: 500
+  max_conn: 1000
 
 kafka:
-  broker: 172.17.0.1:9092
+  broker: localhost:9092
+
+process_transfer_topic: bank.transfer_created
+
 ```
 
 ## How To Run
 
-#### 1. Fun Way:
+#### 1. Docker Compose:
 
 Thanks to docker-compose.
 
 1. Clone repo
 
 ```
-git clone git@github.com:Harisatul/bank-be.git
+git clone https://github.com/farhandwian/bank-be.git
 ```
 
 2. Suppose you are in root folder. running docker compose up command:
@@ -74,7 +88,7 @@ build binary
 1. Clone repo
 
 ```
-git clone git@github.com:Harisatul/bank-be.git
+git clone https://github.com/farhandwian/bank-be.git
 ```
 
 2. Go to service folder
@@ -114,7 +128,7 @@ cd migration
 The backend component provides the API endpoints for Bank Management System. To interact with the backend, you
 can use an API testing tool such as Postman.
 
-Import postman collection [file](https://github.com/Harisatul/bank-be/blob/main/mnc-be-collection.postman_collection.json) to your Postman.
+Import postman collection which can be found in root folder project to your Postman.
 
 ## ERD
 
